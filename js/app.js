@@ -269,6 +269,7 @@
         <span class="tag ${s.type === 'Scalp' ? 'fresh' : 'flip'}">${s.type}</span></div>
         <p>${s.desc}</p>
         <div class="pick-window">⏱ ${s.window}</div>
+        ${s.stats ? `<div class="pick-stats ${s.stats.net.includes('profitable') ? 'good' : s.stats.net.includes('breakeven') ? 'mid' : 'bad'}">📊 ${s.stats.acc} accuracy · ${s.stats.label}</div>` : ''}
       </div>`).join('');
     document.querySelectorAll('.pick-card').forEach(el => el.addEventListener('click', () => {
       document.querySelectorAll('.pick-card').forEach(x => x.classList.remove('selected'));

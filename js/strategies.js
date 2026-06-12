@@ -257,13 +257,13 @@ const BBStrats = (() => {
   }
 
   const list = [
-    { id: 'asian', name: 'Asian Fakeout', icon: '🌅', type: 'Scalp', window: 'London open 12–5pm PKT', desc: 'London sweeps the Asia range to grab stops, then reverses. Trade WITH the trap.', run: asianRange },
-    { id: 'flipscalp', name: 'MSNR Flip Scalp', icon: '🔄', type: 'Scalp', window: 'London + NY', desc: 'Broken M15 body level retested — enter on the M5 rejection in the break direction.', run: flipScalp },
-    { id: 'emapull', name: 'EMA Pullback', icon: '📈', type: 'Scalp', window: 'London + NY', desc: '9/21 EMA trend rider. Buy the pullback to the 21 EMA in a strong trend. Dies in ranges.', run: emaPullback },
-    { id: 'nymomo', name: 'NY Momentum', icon: '🚀', type: 'Scalp', window: '5:30–7pm PKT', desc: "Gold's most explosive hour. First M5 momentum candle beyond the pre-open swing.", run: nyMomentum },
-    { id: 'dsweep', name: 'Double-Top Sweep', icon: '🪤', type: 'Scalp', window: 'London + NY', desc: 'Equal highs/lows = stop pool. Enter after the sweep, with the banks — not at the pattern.', run: doubleSweep },
-    { id: 'msnr', name: 'MSNR Swing', icon: '🎯', type: 'Swing', window: 'All sessions', desc: 'Fresh body levels, gaps, flips on H4/H1 with M15 confirmation. The full combined model.', run: swing('MSNR') },
-    { id: 'pa', name: 'Price Action Swing', icon: '🧱', type: 'Swing', window: 'All sessions', desc: 'BOS/CHoCH + order block / FVG retest with the H4 trend. Rare but highest accuracy.', run: swing('Price Action') },
+    { id: 'asian', stats: { acc: '30%', net: 'negative', label: 'backtest: weak — trade with extreme care' }, name: 'Asian Fakeout', icon: '🌅', type: 'Scalp', window: 'London open 12–5pm PKT', desc: 'London sweeps the Asia range to grab stops, then reverses. Trade WITH the trap.', run: asianRange },
+    { id: 'flipscalp', stats: { acc: '51%', net: '≈ breakeven', label: 'backtest: breakeven after spread' }, name: 'MSNR Flip Scalp', icon: '🔄', type: 'Scalp', window: 'London + NY', desc: 'Broken M15 body level retested — enter on the M5 rejection in the break direction.', run: flipScalp },
+    { id: 'emapull', stats: { acc: '37%', net: 'negative', label: 'backtest: weak — needs a strong trend day' }, name: 'EMA Pullback', icon: '📈', type: 'Scalp', window: 'London + NY', desc: '9/21 EMA trend rider. Buy the pullback to the 21 EMA in a strong trend. Dies in ranges.', run: emaPullback },
+    { id: 'nymomo', stats: { acc: '46%', net: 'negative', label: 'backtest: weak after spread' }, name: 'NY Momentum', icon: '🚀', type: 'Scalp', window: '5:30–7pm PKT', desc: "Gold's most explosive hour. First M5 momentum candle beyond the pre-open swing.", run: nyMomentum },
+    { id: 'dsweep', stats: { acc: '48%', net: 'negative', label: 'backtest: marginal after spread' }, name: 'Double-Top Sweep', icon: '🪤', type: 'Scalp', window: 'London + NY', desc: 'Equal highs/lows = stop pool. Enter after the sweep, with the banks — not at the pattern.', run: doubleSweep },
+    { id: 'msnr', stats: { acc: '53%', net: 'profitable 2026', label: 'backtest: +1546 pips 2026 YTD (with PA)' }, name: 'MSNR Swing', icon: '🎯', type: 'Swing', window: 'All sessions', desc: 'Fresh body levels, gaps, flips on H4/H1 with M15 confirmation. The full combined model.', run: swing('MSNR') },
+    { id: 'pa', stats: { acc: '53%', net: 'profitable 2026', label: 'backtest: +1546 pips 2026 YTD (with MSNR)' }, name: 'Price Action Swing', icon: '🧱', type: 'Swing', window: 'All sessions', desc: 'BOS/CHoCH + order block / FVG retest with the H4 trend. Rare but highest accuracy.', run: swing('Price Action') },
   ];
 
   return { list };

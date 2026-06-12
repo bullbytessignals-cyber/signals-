@@ -255,6 +255,13 @@ body {
 .pick-name { font-weight: 700; font-size: .92rem; flex: 1; }
 .pick-card p { font-size: .78rem; color: var(--muted); min-height: 52px; }
 .pick-window { font-size: .72rem; color: var(--gold2); font-family: 'JetBrains Mono', monospace; margin-top: 8px; }
+.pick-stats {
+  margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line);
+  font-size: .7rem; font-family: 'JetBrains Mono', monospace;
+}
+.pick-stats.good { color: var(--green); }
+.pick-stats.mid { color: var(--gold2); }
+.pick-stats.bad { color: var(--red); }
 .picker-actions { display: flex; align-items: center; gap: 16px; margin-top: 18px; flex-wrap: wrap; }
 .btn-gold {
   background: linear-gradient(120deg, var(--gold), var(--gold2)); color: #1a1405;
