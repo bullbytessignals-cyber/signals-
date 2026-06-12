@@ -49,7 +49,7 @@ function toH4(h1) {
 
   const trades = [];
   let open = null;
-  let lastEntryKey = null, lastEntryTime = 0;
+  let lastEntryKey = null, lastEntryTime = 0, lastLossTime = 0;
 
   const WARMUP = 300; // need history for swings/levels
 
@@ -66,7 +66,7 @@ function toH4(h1) {
       const hitTP = lvl => (s === 1 ? c.h >= lvl : c.l <= lvl);
       // conservative: SL checked first within the candle
       if (hitSL) {
-        if (open.stage === 0) { open.result = 'SL'; }
+        if (open.stage === 0) { open.result = 'SL'; lastLossTime = c.t; }
         else { open.result = 'TP' + open.stage + '+BE'; }
         open.exitT = c.t; trades.push(open); open = null;
       } else {
@@ -97,7 +97,8 @@ function toH4(h1) {
       res = BBEngine.run({ m15, h1, h4, spot: { price: last.c }, now: T });
     } catch (e) { continue; }
 
-    if (res.signal) {
+    if (T - lastLossTime < 4 * 3600e3) continue;
+  if (res.signal) {
       const s = res.signal;
       const key = s.kind + s.dir + Math.round(s.entry / 2) * 2;
       if (key === lastEntryKey && T - lastEntryTime < 6 * 3600e3) continue; // dedupe like the live app

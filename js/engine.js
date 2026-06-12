@@ -330,7 +330,7 @@ const BBEngine = (() => {
 
   /* ---------- main: generate signal ---------- */
 
-  function run({ m15, h1, h4, spot, now }) {
+  function run({ m15, h1, h4, spot, now, cooldownUntil }) {
     const price = spot.price;
     const atrH1 = atr(h1, 14);
     const atrH1pips = toPips(atrH1);
@@ -423,12 +423,18 @@ const BBEngine = (() => {
       }
     }
 
+    // "One loss = stop, breathe": after a stop-out, no new signals for a while
+    const nowTs = now || Date.now();
+    let cooled = false;
+    if (signal && cooldownUntil && nowTs < cooldownUntil) { signal = null; cooled = true; }
+
     // --- waiting state: explain what's missing ---
     let waiting = null;
     if (!signal) {
       const above = levels.filter(L => L.role === 'resistance')[0];
       const below = levels.filter(L => L.role === 'support')[0];
       const missing = [];
+      if (cooled) missing.push('post-loss cooldown — one loss = stop, breathe; new signals resume in ' + Math.ceil((cooldownUntil - nowTs) / 60000) + ' min');
       if (!sess.open) missing.push('market is closed — gold reopens Sun 22:00 UTC');
       if (bias === 'ranging' && !flipOk) missing.push('H4 ranging — only an SNR flip retest can set direction; waiting for a broken level to be retested');
       if (dir && !atLevel && !flipOk) missing.push(`waiting for price to reach a fresh ${dir === 'buy' ? 'support' : 'resistance'} level or flip retest — no chasing`);
