@@ -17,9 +17,17 @@ Professional real-time **XAU/USD (spot gold)** signal platform powered by
   3. Liquidity sweep of equal highs/lows
   4. M15 rejection confirmation (engulfing / pin bar)
   5. Session timing (Asia range → London fake → New York true move)
-- **Every signal: 1 SL + 3 TPs**
-  - MSNR setups: SL 20–40 pips · TP1 = 50 pips · TP2 = 100 pips · TP3 = 150–200 pips (live-volatility scaled)
-  - Price-action setups: SL 50–80 pips · TP1 = 1:1 · TP2 = 2R · TP3 = 150–200+ pips
+- **Every signal: 1 SL + 3 TPs** (SL range 20–100 pips, never higher)
+  - MSNR setups: SL normally 20–40 pips (volatility floor may widen, capped at 100) · TP1 = 50 pips · TP2 = 2R · TP3 = 150–200 pips (live-volatility scaled)
+  - Price-action setups: SL normally 50–80 pips · TP1 = 1:1 · TP2 = 2R · TP3 = 150–200+ pips
+
+## Backtest
+
+`node tools/backtest.js` replays the engine candle-by-candle over the last ~60 days of
+real gold-market M15 data with conservative fills (SL counted first in ambiguous candles,
+SL → breakeven after TP1, 3-pip spread). Last run (Apr 2 – Jun 12, 2026): 40 signals,
+**57.5% hit TP1 before SL**, 30% reached TP2, 20% reached TP3, net **+319 pips** with the
+50/25/25 scale-out plan. Past performance does not guarantee future results.
 - Setup checklist with A+/A/B grading, MSNR levels table, market-structure dashboard,
   trading-session tracker, gold position-size calculator, and local signal history with win-rate stats
 

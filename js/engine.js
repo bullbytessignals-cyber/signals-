@@ -3,11 +3,13 @@
    Implements the combined model:
      H4 structure bias → fresh MSNR body level →
      liquidity sweep → M15 rejection/CHoCH confirmation.
-   Signal output: 1 SL + 3 TPs.
-     MSNR trade:         SL 20–40 pips, TP1 = 50 pips,
-                         TP2 = 100 pips, TP3 = 150–200 pips
+   Signal output: 1 SL + 3 TPs. SL range 20–100 pips max.
+     MSNR trade:         SL normally 20–40 pips (volatility
+                         floor may widen it, capped at 100),
+                         TP1 = 50 pips (or 1:1 if SL > 40),
+                         TP2 = 2R min 100, TP3 = 150–200+
                          (scaled by live volatility).
-     Price action trade: SL 50–80 pips, TP1 = 1:1,
+     Price action trade: SL normally 50–80 pips, TP1 = 1:1,
                          TP2 = 2R, TP3 = 150–200+ pips.
    Gold pip = $0.10.
    ===================================================== */
@@ -277,18 +279,18 @@ const BBEngine = (() => {
   function buildTargets(kind, dir, entry, rawSlPips, atrH1pips) {
     // volatility factor 0..1 from live H1 ATR (≈100 pips calm → ≈250 pips wild)
     const vol = clamp((atrH1pips - 100) / 150, 0, 1);
-    let slPips, tp1, tp2, tp3;
-    if (kind === 'MSNR') {
-      slPips = clamp(rawSlPips, 20, 40);
-      tp1 = 50;                                 // fixed first partial
-      tp2 = 100;                                // mid runner
-      tp3 = Math.round(150 + 50 * vol);         // 150–200 by live volatility
-    } else {
-      slPips = clamp(rawSlPips, 50, 80);
-      tp1 = Math.round(slPips);                 // 1:1
-      tp2 = Math.round(slPips * 2);             // 2R
-      tp3 = Math.max(tp2 + 40, Math.round(150 + 50 * vol));
-    }
+    // SL hard range: 20–100 pips, never higher (both setups).
+    // MSNR stops are wick-based and tight (normally 20–40), so they get a
+    // volatility floor to survive noise in fast markets; price action stops
+    // are zone-based and already structural (normally 50–80).
+    const slPips = kind === 'MSNR'
+      ? clamp(Math.max(rawSlPips, clamp(atrH1pips * 0.30, 20, 100)), 20, 100)
+      : clamp(rawSlPips, 50, 80);
+    // 1 SL + 3 TPs: tight stops (≤40p) take TP1 at 50 pips, otherwise TP1 = 1:1;
+    // TP2 = 2R (min 100); TP3 = 150–200+ scaled by live volatility.
+    const tp1 = slPips <= 40 ? 50 : Math.round(slPips);
+    const tp2 = Math.max(Math.round(slPips * 2), 100);
+    const tp3 = Math.max(tp2 + 40, Math.round(150 + 50 * vol));
     const s = dir === 'buy' ? 1 : -1;
     return {
       slPips: Math.round(slPips), tp1Pips: tp1, tp2Pips: tp2, tp3Pips: tp3, vol,
