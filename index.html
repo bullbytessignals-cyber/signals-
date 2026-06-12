@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BullBytes Gold Signals — Real-Time XAUUSD Signals | MSNR + Advanced Price Action</title>
+<meta name="description" content="Professional real-time gold (XAUUSD) trading signals powered by MSNR (Malaysian Support & Resistance) and advanced price action. Live levels, structure, 1 SL + 3 TP signal model.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥇</text></svg>">
+</head>
+<body>
+
+<!-- ===== Top bar ===== -->
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div class="brand">
+      <span class="brand-icon">◆</span>
+      <span class="brand-name">BullBytes<span class="brand-accent">Gold</span></span>
+      <span class="brand-tag">XAUUSD Signals</span>
+    </div>
+    <nav class="nav">
+      <a href="#signal">Live Signal</a>
+      <a href="#chart">Chart</a>
+      <a href="#levels">MSNR Levels</a>
+      <a href="#sessions">Sessions</a>
+      <a href="#calculator">Risk Calc</a>
+      <a href="#strategy">Strategy</a>
+    </nav>
+    <div class="price-pill" id="pricePill">
+      <span class="pp-label">XAU/USD</span>
+      <span class="pp-price" id="livePrice">—</span>
+      <span class="pp-change" id="liveChange">—</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Hero / status strip ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="status-strip" id="statusStrip">
+      <div class="ss-item"><span class="ss-k">Market</span><span class="ss-v" id="marketStatus">—</span></div>
+      <div class="ss-item"><span class="ss-k">Session</span><span class="ss-v" id="sessionNow">—</span></div>
+      <div class="ss-item"><span class="ss-k">H4 Bias</span><span class="ss-v" id="h4Bias">—</span></div>
+      <div class="ss-item"><span class="ss-k">H1 ATR</span><span class="ss-v" id="atrNow">—</span></div>
+      <div class="ss-item"><span class="ss-k">Volatility</span><span class="ss-v" id="volNow">—</span></div>
+      <div class="ss-item"><span class="ss-k">Updated</span><span class="ss-v" id="lastUpdate">—</span></div>
+    </div>
+    <h1>Real-Time Gold Signals.<br><span class="gold-text">MSNR + Advanced Price Action.</span></h1>
+    <p class="hero-sub">Body-based Malaysian Support &amp; Resistance, market structure, liquidity sweeps and session timing —
+    computed live from real market data. Every signal ships with <strong>1 Stop Loss and 3 Take Profits</strong>.</p>
+  </div>
+</section>
+
+<main class="container">
+
+  <!-- ===== Live signal card ===== -->
+  <section id="signal" class="section">
+    <div class="section-head">
+      <h2>Live Signal Engine</h2>
+      <div class="refresh-row">
+        <span class="engine-dot" id="engineDot"></span>
+        <span id="engineState">Initialising…</span>
+        <button class="btn-ghost" id="refreshBtn">↻ Refresh now</button>
+      </div>
+    </div>
+    <div class="signal-grid">
+      <div class="signal-card" id="signalCard">
+        <div class="sc-loading">Connecting to live gold data…</div>
+      </div>
+      <div class="panel checklist-panel">
+        <h3>Setup Checklist <span class="muted">(combined model)</span></h3>
+        <ul class="checklist" id="checklist">
+          <li data-k="structure">H4 structure direction established</li>
+          <li data-k="level">Price at a fresh MSNR body level</li>
+          <li data-k="sweep">Liquidity sweep into the level</li>
+          <li data-k="confirm">M15 rejection / CHoCH confirmation</li>
+          <li data-k="session">Favourable session (London / NY)</li>
+          <li data-k="news">No high-impact news window</li>
+        </ul>
+        <div class="grade-row">
+          <span>Setup grade:</span><span class="grade" id="setupGrade">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Structure panel ===== -->
+  <section class="section">
+    <div class="section-head"><h2>Market Structure</h2></div>
+    <div class="structure-grid" id="structureGrid">
+      <div class="panel tf-panel" id="tfH4"><h3>H4</h3><div class="tf-body muted">Loading…</div></div>
+      <div class="panel tf-panel" id="tfH1"><h3>H1</h3><div class="tf-body muted">Loading…</div></div>
+      <div class="panel tf-panel" id="tfM15"><h3>M15</h3><div class="tf-body muted">Loading…</div></div>
+    </div>
+  </section>
+
+  <!-- ===== Chart ===== -->
+  <section id="chart" class="section">
+    <div class="section-head"><h2>Live Chart — XAU/USD</h2></div>
+    <div class="panel chart-panel">
+      <div id="tvChart"></div>
+    </div>
+  </section>
+
+  <!-- ===== MSNR levels ===== -->
+  <section id="levels" class="section">
+    <div class="section-head">
+      <h2>MSNR Levels <span class="muted">(body-based, H4 / H1)</span></h2>
+    </div>
+    <div class="panel">
+      <table class="levels-table">
+        <thead>
+          <tr><th>Level</th><th>TF</th><th>Role</th><th>State</th><th>Type</th><th>Distance</th><th>Strength</th></tr>
+        </thead>
+        <tbody id="levelsBody">
+          <tr><td colspan="7" class="muted center">Calculating levels…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== Sessions ===== -->
+  <section id="sessions" class="section">
+    <div class="section-head"><h2>Trading Sessions</h2></div>
+    <div class="sessions-grid" id="sessionsGrid"></div>
+    <p class="note">Playbook: mark the Asia range → London often sweeps it (the fake move) → New York delivers the true move.
+    Avoid the daily rollover (spread blowout) and high-impact news: <strong>NFP, CPI, FOMC, PPI, Fed speeches</strong>.</p>
+  </section>
+
+  <!-- ===== Risk calculator ===== -->
+  <section id="calculator" class="section">
+    <div class="section-head"><h2>Position Size Calculator</h2></div>
+    <div class="panel calc-panel">
+      <div class="calc-inputs">
+        <label>Account balance ($)
+          <input type="number" id="calcBalance" value="1000" min="10">
+        </label>
+        <label>Risk per trade (%)
+          <input type="number" id="calcRisk" value="1" min="0.1" max="10" step="0.1">
+        </label>
+        <label>Stop loss (pips)
+          <input type="number" id="calcSL" value="30" min="5" max="200">
+        </label>
+      </div>
+      <div class="calc-results" id="calcResults"></div>
+      <p class="note">Gold math: 1 lot = 100 oz · $1.00 move = $100/lot · 1 pip (0.10) = $10/lot, $1/mini, $0.10/micro.
+      Typical daily range $20–40 — size down and risk a maximum of 1–2% per trade.</p>
+    </div>
+  </section>
+
+  <!-- ===== Signal history ===== -->
+  <section id="history" class="section">
+    <div class="section-head">
+      <h2>Signal History <span class="muted">(this browser)</span></h2>
+      <div class="hist-stats" id="histStats"></div>
+    </div>
+    <div class="panel">
+      <table class="levels-table">
+        <thead>
+          <tr><th>Time</th><th>Type</th><th>Dir</th><th>Entry</th><th>SL</th><th>TP1</th><th>TP2</th><th>TP3</th><th>Status</th></tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="9" class="muted center">No signals recorded yet — they appear here as the engine fires.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== Strategy docs ===== -->
+  <section id="strategy" class="section">
+    <div class="section-head"><h2>The Strategy</h2></div>
+    <div class="strategy-grid">
+      <div class="panel strat-card">
+        <h3>① MSNR — Malaysian SNR</h3>
+        <p>Levels are drawn from candle <strong>bodies (open/close)</strong>, never wicks. Wicks are noise; bodies show where price settled.</p>
+        <ul>
+          <li><strong>Fresh levels</strong> — untouched since creation. First touch gives the strongest reaction; after 2–3 tests the level weakens.</li>
+          <li><strong>Gap SNR</strong> — a body-to-body gap is the strongest level type. Price returns to fill it, then rejects hard.</li>
+          <li><strong>SNR Flip</strong> — support broken with a body close becomes resistance (and vice versa). The retest of the flip is the classic entry.</li>
+          <li><strong>A / V shapes</strong> — sharp reversal candles mark institutional levels.</li>
+          <li><strong>Timeframes</strong> — mark on H4/H1, execute on M15/M5.</li>
+        </ul>
+        <div class="strat-foot">SL: 20–40 pips · TP1 50 pips · TP2/TP3 up to 150–200 pips by volatility</div>
+      </div>
+      <div class="panel strat-card">
+        <h3>② Advanced Price Action</h3>
+        <ul>
+          <li><strong>Structure</strong> — HH/HL = uptrend, LH/LL = downtrend. BOS continues the trend; CHoCH warns of reversal.</li>
+          <li><strong>Liquidity sweeps</strong> — gold is the king of stop hunts. Equal highs/lows get swept, then price reverses. Enter <em>after</em> the sweep into your level.</li>
+          <li><strong>Order blocks</strong> — last opposite candle before an impulse. On a fresh MSNR level = A+ confluence.</li>
+          <li><strong>Fair Value Gaps</strong> — 3-candle imbalances gold loves to fill; use as entry refinement.</li>
+          <li><strong>Sessions</strong> — Asia ranges, London fakes, New York delivers.</li>
+        </ul>
+        <div class="strat-foot">SL: 50–80 pips · TP1 at 1:1 · runners to 150–200+ pips</div>
+      </div>
+      <div class="panel strat-card">
+        <h3>③ Execution &amp; Risk Rules</h3>
+        <ul>
+          <li>Every signal: <strong>1 SL, 3 TPs</strong>. Scale out at TP1, move SL to breakeven, let TP2/TP3 run.</li>
+          <li>Minimum 1:2 reward-to-risk on the full position.</li>
+          <li>Risk 1–2% max per trade — gold's volatility punishes oversizing.</li>
+          <li>No chasing: price must come to the level.</li>
+          <li>Stay flat through NFP, CPI, FOMC — trade the post-news retest instead.</li>
+          <li>Avoid the rollover dead zone (spreads widen massively).</li>
+        </ul>
+        <div class="strat-foot">Combined model: H4 bias → fresh MSNR level → sweep → M15 confirmation → execute</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="brand"><span class="brand-icon">◆</span><span class="brand-name">BullBytes<span class="brand-accent">Gold</span></span></div>
+    <p class="disclaimer"><strong>Risk disclaimer:</strong> Trading gold (XAUUSD) and other leveraged products carries a high level of risk and can result in the loss of all your capital. The signals, levels and analysis on this site are generated automatically from market data for <strong>educational purposes only</strong> and are <strong>not financial advice</strong>. Past performance does not guarantee future results. Never trade with money you cannot afford to lose. Always do your own analysis.</p>
+    <p class="muted">© <span id="year"></span> BullBytes Gold Signals · Live data: gold-api.com &amp; PAXG market feeds · Chart: TradingView</p>
+  </div>
+</footer>
+
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
