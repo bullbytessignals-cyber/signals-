@@ -299,7 +299,7 @@ const BBEngine = (() => {
 
   /* ---------- main: generate signal ---------- */
 
-  function run({ m15, h1, h4, spot }) {
+  function run({ m15, h1, h4, spot, now }) {
     const price = spot.price;
     const atrH1 = atr(h1, 14);
     const atrH1pips = toPips(atrH1);
@@ -308,7 +308,7 @@ const BBEngine = (() => {
     const stM15 = analyzeStructure(m15);
     const levels = buildLevels(h4, h1, price, atrH1);
     const sweep = detectSweep(m15);
-    const sess = sessionInfo();
+    const sess = sessionInfo(now ? new Date(now) : new Date());
 
     const bias = stH4.trend;
     const dir = bias === 'bullish' ? 'buy' : bias === 'bearish' ? 'sell' : null;
