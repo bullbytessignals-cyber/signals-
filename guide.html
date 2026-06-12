@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strategy Guide — MSNR + Price Action Masterclass | BullBytes Gold Signals</title>
+<meta name="description" content="The complete MSNR (Malaysian Support & Resistance), advanced price action and stop-loss masterclass behind the BullBytes gold signal engine.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥇</text></svg>">
+<style>
+.guide { max-width: 860px; margin: 0 auto; }
+.guide h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 800; letter-spacing: -.03em; margin: 36px 0 8px; }
+.guide .lead { color: var(--muted); font-size: 1.02rem; margin-bottom: 8px; }
+.guide h2 { color: var(--gold2); font-size: 1.35rem; margin: 44px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.guide h3 { font-size: 1.05rem; margin: 26px 0 10px; }
+.guide p { color: var(--text); font-size: .94rem; margin: 10px 0; }
+.guide p.soft, .guide li { color: var(--muted); }
+.guide ul, .guide ol { margin: 10px 0 10px 22px; font-size: .94rem; }
+.guide li { margin: 6px 0; }
+.guide li strong, .guide p strong { color: var(--gold2); }
+.guide .rule {
+  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--gold);
+  border-radius: 10px; padding: 14px 16px; margin: 16px 0; font-size: .92rem;
+}
+.guide .danger { border-left-color: var(--red); }
+.guide .flow { counter-reset: step; list-style: none; margin-left: 0; }
+.guide .flow li {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+  padding: 12px 14px 12px 52px; margin: 8px 0; position: relative; color: var(--text);
+}
+.guide .flow li::before {
+  counter-increment: step; content: counter(step);
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(232,179,58,.15); color: var(--gold2); font-weight: 700; font-family: 'JetBrains Mono', monospace; font-size: .8rem;
+}
+.backlink { display: inline-block; margin: 18px 0; color: var(--gold2); text-decoration: none; font-size: .88rem; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+    <div class="brand">
+      <span class="brand-icon">◆</span>
+      <span class="brand-name">BullBytes<span class="brand-accent">Gold</span></span>
+      <span class="brand-tag">Strategy Guide</span>
+    </div>
+    <nav class="nav">
+      <a href="index.html#signal">Live Signal</a>
+      <a href="index.html#chart">Chart</a>
+      <a href="index.html#levels">MSNR Levels</a>
+      <a href="#msnr">MSNR</a>
+      <a href="#pa">Price Action</a>
+      <a href="#sl">Stop Loss</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container guide">
+  <a class="backlink" href="index.html">← Back to live signals</a>
+  <h1>The Complete <span class="gold-text">MSNR + Price Action</span> Masterclass</h1>
+  <p class="lead">This is the exact methodology the BullBytes signal engine runs on, in plain language.
+  No indicators. Just structure, levels, liquidity and discipline.</p>
+
+  <!-- ================= PART 1 ================= -->
+  <h2 id="msnr">Part 1 · MSNR — Malaysian Support &amp; Resistance</h2>
+
+  <h3>What MSNR actually is</h3>
+  <p>Normal support/resistance with one massive upgrade: <strong>you only care about candle bodies, never wicks.</strong></p>
+  <p class="soft">A candle's body shows where buyers and sellers actually <em>agreed</em> and settled. The wick is a quick spike —
+  emotion, panic, stop hunting. Body levels mark where the real money sat down; wick levels mark where someone panicked for five seconds.</p>
+  <div class="rule"><strong>Rule Zero of MSNR:</strong> open and close prices matter. Highs and lows don't.</div>
+
+  <h3>How to draw an MSNR level</h3>
+  <ol>
+    <li>Open the H4 chart on gold.</li>
+    <li>Find a spot where price made a strong move away — a big push up or down.</li>
+    <li>Look at the candle where that move started.</li>
+    <li>Draw the line at the <strong>body</strong> of that candle (open or close), not the wick tip.</li>
+    <li>Extend it to the right. That's your level. No indicators, no EMA, no RSI — just lines.</li>
+  </ol>
+  <p class="soft">A level isn't a hairline — treat it as a small <strong>zone</strong>, roughly $2–3 thick on gold. Price respects areas, not exact prices.</p>
+
+  <h3>Fresh vs Used vs Dead — the most important concept</h3>
+  <ul>
+    <li><strong>Fresh level</strong> — price created it, ran away, and has never come back. All the pending institutional orders are untouched. Full fuel tank. First touch = strongest reaction = <strong>A+ trade</strong>.</li>
+    <li><strong>Used level</strong> — touched once, bounced, left. Some fuel remains. Second touch = okay trade.</li>
+    <li><strong>Dead level</strong> — tested 3+ times. When price keeps knocking on the same door, the door eventually <em>breaks</em>. Don't trade it — expect a breakout instead.</li>
+  </ul>
+
+  <h3>The Flip — your bread-and-butter setup</h3>
+  <p class="soft">The setup you'll trade most of the time:</p>
+  <ol>
+    <li>Price has a support level (drawn from bodies).</li>
+    <li>A candle <strong>closes its body below</strong> that support — not a wick poke, a full body close. That's a real break.</li>
+    <li>The level changes its job: old support is now resistance. Everyone who bought there is trapped, and when price returns they sell to escape at breakeven — that selling pressure <em>is</em> the new resistance.</li>
+    <li>Wait for price to pull back up and <strong>retest</strong> the broken level.</li>
+    <li>Rejection at the retest → enter <strong>SELL</strong>. Mirror logic for broken resistance → buy the retest.</li>
+  </ol>
+  <div class="rule">Most people lose not because the flip fails, but because they can't wait for the retest and jump in early. The retest <em>is</em> the trade.</div>
+
+  <h3>Gap SNR — the king level</h3>
+  <p class="soft">When price moves so fast it leaves a gap between candle <em>bodies</em>, nobody got to trade in that space — zero negotiation.
+  Markets hate unfinished business: price very often returns to fill the zone, then reacts violently.
+  <strong>A Gap SNR that is also fresh is the highest-probability level in the entire system.</strong> Mark it and wait like a sniper.</p>
+
+  <h3>A-shape and V-shape levels</h3>
+  <ul>
+    <li><strong>V-shape:</strong> price crashes, instantly reverses and rockets up. That bottom (the body of the reversal candle) is a powerful buy level — someone with deep pockets bought aggressively there.</li>
+    <li><strong>A-shape:</strong> price spikes up and instantly dumps. That top is a strong sell level.</li>
+  </ul>
+  <p class="soft">Sharp reversals = institutional footprints. Slow, rounded reversals = retail noise. Mark the sharp ones.</p>
+
+  <!-- ================= PART 2 ================= -->
+  <h2 id="pa">Part 2 · Advanced Price Action</h2>
+
+  <h3>Market structure — the skeleton of everything</h3>
+  <p class="soft">Price only ever does three things: up, down, or sideways.</p>
+  <ul>
+    <li><strong>Uptrend:</strong> higher highs + higher lows. Stairs going up.</li>
+    <li><strong>Downtrend:</strong> lower highs + lower lows. Stairs going down.</li>
+    <li><strong>Range:</strong> peaks and dips at roughly the same levels.</li>
+  </ul>
+  <div class="rule">In an uptrend you ONLY look for buys at support. In a downtrend, ONLY sells at resistance.
+  Counter-trend trading is how accounts die. The trend is not your friend — it's your <strong>boss</strong>.</div>
+
+  <h3>BOS and CHoCH — when structure speaks</h3>
+  <ul>
+    <li><strong>BOS (Break of Structure):</strong> price breaks the previous peak in trend direction → "yes, we're still going". Stay with the trend.</li>
+    <li><strong>CHoCH (Change of Character):</strong> first break <em>against</em> the trend → the market's first crack. Stop buying, start watching for sells (or vice versa).</li>
+  </ul>
+
+  <h3>Liquidity — the stop-hunt game</h3>
+  <p class="soft"><strong>Big players need your stop losses to fill their orders.</strong> A bank that wants to buy massive size can't just click buy —
+  there aren't enough sellers. So they push price down into the zones where retail stops cluster (a triggered buy-side stop is a sell order),
+  absorb them as their fill, and <em>then</em> price launches.</p>
+  <p class="soft">Where do stops cluster? Below obvious supports, above obvious resistances, and especially at
+  <strong>equal highs / equal lows</strong> — clean double tops/bottoms look "safe", so everyone hides stops there.</p>
+  <div class="rule"><strong>Your edge:</strong> never enter at the level directly. Wait for the sweep first.
+  A sweep into a fresh MSNR level means the trap has been sprung — now you enter <em>with</em> the big players instead of being their fuel.</div>
+
+  <h3>Confirmation candles — your green light (M15)</h3>
+  <ul>
+    <li><strong>Engulfing:</strong> a candle that completely swallows the previous body in the opposite direction.</li>
+    <li><strong>Pin bar:</strong> long wick through the level, small body closing back inside — the market tried to break it and got slapped back.</li>
+    <li><strong>Close back inside:</strong> price dipped through the level (sweep) but the candle <em>closed</em> back beyond it. Fakeout confirmed.</li>
+  </ul>
+  <div class="rule"><strong>Golden discipline rule:</strong> wait for the candle to fully CLOSE.
+  A candle can look like a perfect rejection at minute 12 and become a full breakdown by minute 15.
+  Closed candles are facts; open candles are rumours.</div>
+
+  <h3>Sessions — when to trade gold (PKT)</h3>
+  <ul>
+    <li><strong>Asia (~5am–12pm PKT):</strong> gold sleeps. Don't trade it — but mark the Asia high/low; they become liquidity targets.</li>
+    <li><strong>London (12pm–4pm PKT):</strong> gold wakes up. London's first move is very often the FAKE one — it sweeps the Asia range.</li>
+    <li><strong>New York (5:30pm–10pm PKT):</strong> the real session. Classic play: London sweeps one side of the Asia range, New York drives the true move the other way.</li>
+  </ul>
+  <p class="soft">If you only traded 5:30–9pm PKT and ignored everything else, you'd already be ahead of most traders.</p>
+
+  <!-- ================= PART 3 ================= -->
+  <h2 id="sl">Part 3 · Stop Loss — the complete guide</h2>
+
+  <h3>What an SL really is</h3>
+  <p class="soft">A stop loss is not an insult to your analysis. It's the price where your trade idea is officially <strong>wrong</strong>.
+  If you bought because support should hold and price closes well below it, your reason for being in the trade is gone —
+  the SL just automates the exit so emotions can't keep you holding a corpse.</p>
+  <div class="rule danger">Trading gold without an SL is not brave — it's slow account deletion. Gold moves $20–40 on a normal day;
+  one news spike against you can erase weeks of profit in minutes.</div>
+
+  <h3>Where exactly to place it</h3>
+  <ul>
+    <li><strong>Buy:</strong> below the low of the rejection/sweep candle, <strong>plus a 30–50 pip buffer</strong> ($3–5). Gold loves poking exact lows by a dollar before reversing.</li>
+    <li><strong>Sell:</strong> above the rejection candle's high + the same buffer.</li>
+    <li><strong>Never</strong> at a round number ($4200.00, $4250.00) or exactly at an obvious high/low — that's where everyone else's stop sits, which is exactly where price will visit.</li>
+  </ul>
+
+  <h3>Lot size — the math that saves your account</h3>
+  <p class="soft">Losing traders pick the lot size first, then squeeze the SL to fit. That's backwards. Correct order:</p>
+  <ol>
+    <li><strong>Decide your risk:</strong> 1–2% of the account. $500 at 1% = $5. $1000 at 2% = $20.</li>
+    <li><strong>Measure the SL from the chart:</strong> the structure tells you where it belongs — say 50 pips.</li>
+    <li><strong>Calculate the lot:</strong> Risk ÷ (SL pips × pip value). On gold 1 pip = $1 per 0.10 lot, so $10 ÷ 50 pips = 0.02 lots.</li>
+  </ol>
+  <div class="rule">The chart decides the SL placement. Your account size decides the lot.
+  You never compromise the SL to fit a bigger lot — you shrink the lot to fit the proper SL.
+  (Use the <a href="index.html#calculator" style="color:var(--gold2)">position size calculator</a>.)</div>
+
+  <h3>The unbreakable rules</h3>
+  <ol>
+    <li><strong>Never widen the SL.</strong> Moving it away "to give the trade room" isn't trading — it's praying.</li>
+    <li><strong>Know SL and TP before entry.</strong> If you can't state them before clicking, you have a gamble, not a trade.</li>
+    <li><strong>Minimum 1:2 reward-to-risk</strong>, with the TP at a real level. At 1:2 you only need a 34% win rate to break even.</li>
+    <li><strong>Breakeven move:</strong> once price moves 1R in your favour, slide the SL to entry. Worst case becomes zero.</li>
+    <li><strong>One loss = stop, breathe. Two losses in a day = close the laptop.</strong> Revenge trading turns a $20 loss into a $200 one.</li>
+  </ol>
+
+  <!-- ================= FLOW ================= -->
+  <h2 id="flow">The full system in one flow</h2>
+  <ol class="flow">
+    <li><strong>H4:</strong> what's the structure — up, down, or range?</li>
+    <li><strong>H4/H1:</strong> mark FRESH body-based levels in the trend's direction. Gaps and flips = priority.</li>
+    <li><strong>Wait</strong> for price to actually reach a level. This can take hours or days — that's normal.</li>
+    <li>Watch for a <strong>liquidity sweep</strong> into the level.</li>
+    <li><strong>M15:</strong> wait for a CLOSED confirmation candle — engulfing, pin bar, or close back inside.</li>
+    <li><strong>Enter.</strong> SL behind the sweep wick + $3–5 buffer. Lot sized from your 1–2% risk.</li>
+    <li><strong>TP</strong> ladder: 1 SL, 3 TPs — partials at TP1, breakeven, let the runners go. Minimum 1:2 overall.</li>
+    <li><strong>No setup = no trade.</strong> Sitting on your hands IS a position.</li>
+  </ol>
+  <div class="rule">The hard part isn't the knowledge — you now have all of it. The hard part is waiting for steps 3, 4 and 5
+  without jumping early. <strong>The market pays patient snipers and eats impatient machine-gunners.</strong></div>
+
+  <a class="backlink" href="index.html">← Back to live signals</a>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="brand"><span class="brand-icon">◆</span><span class="brand-name">BullBytes<span class="brand-accent">Gold</span></span></div>
+    <p class="disclaimer"><strong>Risk disclaimer:</strong> Trading gold (XAUUSD) carries a high level of risk and can result in the loss of all your capital. This guide and the signals on this site are for <strong>educational purposes only</strong> and are <strong>not financial advice</strong>. Past performance does not guarantee future results.</p>
+    <p class="muted">© <span id="year"></span> BullBytes Gold Signals</p>
+  </div>
+</footer>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

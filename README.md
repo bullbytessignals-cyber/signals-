@@ -25,9 +25,12 @@ Professional real-time **XAU/USD (spot gold)** signal platform powered by
 
 `node tools/backtest.js` replays the engine candle-by-candle over the last ~60 days of
 real gold-market M15 data with conservative fills (SL counted first in ambiguous candles,
-SL → breakeven after TP1, 3-pip spread). Last run (Apr 2 – Jun 12, 2026): 40 signals,
-**57.5% hit TP1 before SL**, 30% reached TP2, 20% reached TP3, net **+319 pips** with the
-50/25/25 scale-out plan. Past performance does not guarantee future results.
+SL → breakeven after TP1, 3-pip spread). Last run (Apr 2 – Jun 12, 2026): 264 signals,
+**52.9% hit TP1 before SL**, 27.8% reached TP2, 24% reached TP3, net **+1138 pips**
+(≈26 pips/day) with the 50/25/25 scale-out plan. Past performance does not guarantee
+future results.
+
+The full strategy methodology is documented on the site at [`guide.html`](guide.html).
 - Setup checklist with A+/A/B grading, MSNR levels table, market-structure dashboard,
   trading-session tracker, gold position-size calculator, and local signal history with win-rate stats
 

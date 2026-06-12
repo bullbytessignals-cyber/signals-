@@ -199,7 +199,7 @@ const BBEngine = (() => {
 
   /* ---------- M15 confirmation candles ---------- */
 
-  function detectConfirmation(m15, dir) {
+  function detectConfirmation(m15, dir, level) {
     const c = m15[m15.length - 2]; // last CLOSED candle
     const p = m15[m15.length - 3];
     if (!c || !p) return null;
@@ -212,12 +212,35 @@ const BBEngine = (() => {
       const pin = lowerWick >= 2 * b && (c.c - c.l) / r >= 0.6;
       if (engulf) return 'bullish engulfing';
       if (pin) return 'bullish pin bar';
+      // sweep reclaim: dipped through the level but CLOSED back above it
+      if (level != null && c.l < level - 0.3 && c.c > level && c.c > c.o) return 'close back inside (sweep reclaim)';
     } else {
       const engulf = c.c < c.o && p.c > p.o && c.c <= bodyLo(p) && c.o >= bodyHi(p);
       const upperWick = c.h - Math.max(c.o, c.c);
       const pin = upperWick >= 2 * b && (c.h - c.c) / r >= 0.6;
       if (engulf) return 'bearish engulfing';
       if (pin) return 'bearish pin bar';
+      if (level != null && c.h > level + 0.3 && c.c < level && c.c < c.o) return 'close back inside (sweep reclaim)';
+    }
+    return null;
+  }
+
+  /* ---------- SNR flip retest (the bread-and-butter setup) ----------
+     A level broken with a BODY close changes its job: trapped traders
+     exiting at breakeven make old support act as resistance (and vice
+     versa). We trade the retest in the direction of the break. */
+
+  function detectFlipRetest(h1, levels, price, prox, tol) {
+    for (const L of levels) {
+      if (Math.abs(L.price - price) > prox) continue;
+      for (let i = h1.length - 3; i >= Math.max(2, h1.length - 50); i--) {
+        const c = h1[i], p = h1[i - 1];
+        // body close through the level after sitting on the other side
+        if (p.c > L.price - tol * 0.2 && c.c < L.price - tol * 0.6) return { level: L, dir: 'sell', brokeAt: c.t };
+        if (p.c < L.price + tol * 0.2 && c.c > L.price + tol * 0.6) return { level: L, dir: 'buy', brokeAt: c.t };
+        // stop scanning once price was far from the level (no flip context)
+        if (Math.abs(c.c - L.price) > tol * 4) break;
+      }
     }
     return null;
   }
@@ -288,13 +311,19 @@ const BBEngine = (() => {
       : clamp(rawSlPips, 50, 80);
     // 1 SL + 3 TPs: tight stops (≤40p) take TP1 at 50 pips, otherwise TP1 = 1:1;
     // TP2 = 2R (min 100); TP3 = 150–200+ scaled by live volatility.
-    const tp1 = slPips <= 40 ? 50 : Math.round(slPips);
-    const tp2 = Math.max(Math.round(slPips * 2), 100);
-    const tp3 = Math.max(tp2 + 40, Math.round(150 + 50 * vol));
     const s = dir === 'buy' ? 1 : -1;
+    // never park the SL on a round number ($XX00/$XX50) or it sits in the
+    // same pool as everyone else's stops — nudge it a little further
+    let slAdj = slPips;
+    const slPrice0 = entry - s * fromPips(slAdj);
+    const nearestRound = Math.round(slPrice0 / 50) * 50;
+    if (Math.abs(slPrice0 - nearestRound) < 1.0 && slAdj + 15 <= 100) slAdj += 15;
+    const tp1 = slAdj <= 40 ? 50 : Math.round(slAdj);
+    const tp2 = Math.max(Math.round(slAdj * 2), 100);
+    const tp3 = Math.max(tp2 + 40, Math.round(150 + 50 * vol));
     return {
-      slPips: Math.round(slPips), tp1Pips: tp1, tp2Pips: tp2, tp3Pips: tp3, vol,
-      sl: entry - s * fromPips(slPips),
+      slPips: Math.round(slAdj), tp1Pips: tp1, tp2Pips: tp2, tp3Pips: tp3, vol,
+      sl: entry - s * fromPips(slAdj),
       tps: [entry + s * fromPips(tp1), entry + s * fromPips(tp2), entry + s * fromPips(tp3)],
     };
   }
@@ -315,20 +344,29 @@ const BBEngine = (() => {
     const bias = stH4.trend;
     const dir = bias === 'bullish' ? 'buy' : bias === 'bearish' ? 'sell' : null;
 
-    // nearest fresh MSNR level in the direction of the bias
+    // nearest fresh (or once-tested) MSNR level in the direction of the bias.
+    // First touch of a fresh level = A+; second touch = OK; 3+ touches = dead.
     const prox = Math.max(3, atrH1 * 0.6);
+    const tol = Math.max(2.5, atrH1 * 0.35);
     const atLevel = dir && levels.find(L =>
-      L.fresh &&
+      (L.fresh || L.touches === 1) &&
       Math.abs(L.price - price) <= prox &&
       ((dir === 'buy' && L.role === 'support') || (dir === 'sell' && L.role === 'resistance'))
     );
 
-    const confirm = dir ? detectConfirmation(m15, dir) : null;
-    const sweepOk = sweep && dir && sweep.side === dir;
+    // SNR flip retest — tradeable with the trend, or in a range (the break
+    // itself sets the direction when H4 has no bias)
+    const flip = detectFlipRetest(h1, levels, price, prox, tol);
+    const flipOk = flip && (bias === 'ranging' || flip.dir === dir) ? flip : null;
+
+    const tradeDir = dir || (flipOk ? flipOk.dir : null);
+    const confirmLevel = atLevel ? atLevel.price : flipOk ? flipOk.level.price : null;
+    const confirm = tradeDir ? detectConfirmation(m15, tradeDir, confirmLevel) : null;
+    const sweepOk = sweep && tradeDir && sweep.side === tradeDir;
 
     const checklist = {
       structure: bias !== 'ranging',
-      level: !!atLevel,
+      level: !!atLevel || !!flipOk,
       sweep: !!sweepOk,
       confirm: !!confirm,
       session: sess.prime,
@@ -339,19 +377,26 @@ const BBEngine = (() => {
 
     let signal = null;
 
-    // --- MSNR setup: fresh body level + M15 confirmation (sweep = bonus) ---
-    if (dir && atLevel && confirm && sess.open) {
+    // --- MSNR setup: fresh/2nd-touch body level OR flip retest + M15 confirmation ---
+    if (tradeDir && (atLevel || flipOk) && confirm && sess.open) {
       const rej = m15[m15.length - 2];
-      const rawSl = dir === 'buy'
-        ? toPips(price - rej.l) + 10   // beyond rejection wick + buffer
-        : toPips(rej.h - price) + 10;
-      const t = buildTargets('MSNR', dir, price, rawSl, atrH1pips);
+      // SL beyond the rejection/sweep wick + 30–50 pip buffer (gold wick games)
+      const buffer = 30 + Math.round(20 * clamp((atrH1pips - 100) / 150, 0, 1));
+      const rawSl = tradeDir === 'buy'
+        ? toPips(price - rej.l) + buffer
+        : toPips(rej.h - price) + buffer;
+      const t = buildTargets('MSNR', tradeDir, price, rawSl, atrH1pips);
+      const L = atLevel || flipOk.level;
       signal = {
-        kind: 'MSNR', dir, entry: price, ...t, grade,
+        kind: 'MSNR', dir: tradeDir, entry: price, ...t, grade,
         reasons: [
-          `H4 structure is <strong>${bias}</strong>${stH4.event ? ' (' + stH4.event + ')' : ''}`,
-          `Price at <strong>fresh ${atLevel.kind}</strong> ${atLevel.role} ${atLevel.price.toFixed(2)} (${atLevel.tf}, untested)`,
-          sweepOk ? `Liquidity sweep of equal ${dir === 'buy' ? 'lows' : 'highs'} at ${sweep.level.toFixed(2)}` : null,
+          bias !== 'ranging'
+            ? `H4 structure is <strong>${bias}</strong>${stH4.event ? ' (' + stH4.event + ')' : ''}`
+            : 'H4 ranging — direction set by the level break (flip)',
+          atLevel
+            ? `Price at <strong>${atLevel.fresh ? 'fresh' : '2nd-touch'} ${atLevel.kind}</strong> ${atLevel.role} ${atLevel.price.toFixed(2)} (${atLevel.tf})`
+            : `<strong>SNR flip retest</strong>: broken ${flipOk.dir === 'sell' ? 'support → resistance' : 'resistance → support'} at ${flipOk.level.price.toFixed(2)}`,
+          sweepOk ? `Liquidity sweep of equal ${tradeDir === 'buy' ? 'lows' : 'highs'} at ${sweep.level.toFixed(2)}` : null,
           `M15 confirmation: <strong>${confirm}</strong>`,
           sess.prime ? `Prime session window (${sess.sessions.join(' + ')})` : null,
         ].filter(Boolean),
@@ -363,8 +408,8 @@ const BBEngine = (() => {
       const zone = detectOBFVG(h1, bias, price, atrH1);
       if (zone && zone.dir === dir && confirm) {
         const rawSl = dir === 'buy'
-          ? toPips(price - zone.lo) + 15
-          : toPips(zone.hi - price) + 15;
+          ? toPips(price - zone.lo) + 30
+          : toPips(zone.hi - price) + 30;
         const t = buildTargets('PA', dir, price, rawSl, atrH1pips);
         signal = {
           kind: 'Price Action', dir, entry: price, ...t, grade,
@@ -385,9 +430,9 @@ const BBEngine = (() => {
       const below = levels.filter(L => L.role === 'support')[0];
       const missing = [];
       if (!sess.open) missing.push('market is closed — gold reopens Sun 22:00 UTC');
-      if (bias === 'ranging') missing.push('H4 structure is ranging — no clear bias');
-      if (dir && !atLevel) missing.push(`waiting for price to reach a fresh ${dir === 'buy' ? 'support' : 'resistance'} level — no chasing`);
-      if (dir && atLevel && !confirm) missing.push('at the level — waiting for an M15 rejection candle (engulfing / pin bar)');
+      if (bias === 'ranging' && !flipOk) missing.push('H4 ranging — only an SNR flip retest can set direction; waiting for a broken level to be retested');
+      if (dir && !atLevel && !flipOk) missing.push(`waiting for price to reach a fresh ${dir === 'buy' ? 'support' : 'resistance'} level or flip retest — no chasing`);
+      if (tradeDir && (atLevel || flipOk) && !confirm) missing.push('at the level — waiting for a CLOSED M15 confirmation (engulfing / pin bar / close back inside)');
       if (sess.usDataHour) missing.push('US data hour — stand aside through high-impact news');
       waiting = { missing, above, below };
     }
