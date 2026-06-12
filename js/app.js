@@ -257,6 +257,83 @@
       : `<span>Active: <b>${hist.length}</b></span>`;
   }
 
+  /* ---------- strategy picker ---------- */
+
+  let pickedStrat = null;
+  let scanCooldownT = 0;
+
+  function renderPicker() {
+    $('pickerGrid').innerHTML = BBStrats.list.map(s => `
+      <div class="pick-card" data-id="${s.id}">
+        <div class="pick-top"><span class="pick-icon">${s.icon}</span><span class="pick-name">${s.name}</span>
+        <span class="tag ${s.type === 'Scalp' ? 'fresh' : 'flip'}">${s.type}</span></div>
+        <p>${s.desc}</p>
+        <div class="pick-window">⏱ ${s.window}</div>
+      </div>`).join('');
+    document.querySelectorAll('.pick-card').forEach(el => el.addEventListener('click', () => {
+      document.querySelectorAll('.pick-card').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      pickedStrat = BBStrats.list.find(s => s.id === el.dataset.id);
+      $('scanHint').textContent = pickedStrat.name + ' selected — hit the button to scan live data';
+    }));
+  }
+
+  async function scan() {
+    if (!pickedStrat) { $('scanHint').textContent = '⚠ Select a strategy first'; return; }
+    if (Date.now() < scanCooldownT) return;
+    scanCooldownT = Date.now() + 5000;
+    const btn = $('scanBtn');
+    btn.disabled = true; btn.textContent = '⏳ Scanning live gold data…';
+    try {
+      const data = await BBData.fetchAll();
+      const m5 = await BBData.fetchM5(data.offset);
+      const lastLoss = loadHist().filter(x => x.status === 'SL' && x.closedAt).pop();
+      const ctx = { ...data, m5, now: Date.now(), cooldownUntil: lastLoss ? lastLoss.closedAt + 4 * 3600e3 : 0 };
+      const out = pickedStrat.run(ctx);
+      renderScanResult(out, data.spot.price);
+      if (out.signal) recordSignal(out.signal);
+    } catch (e) {
+      $('scanResult').innerHTML = `<div class="signal-card" style="margin-top:18px"><div class="sc-wait-title">Data error — try again</div><div class="muted">${e.message || e}</div></div>`;
+    }
+    btn.disabled = false; btn.textContent = '⚡ Get Signal Now';
+  }
+
+  function renderScanResult(out, price) {
+    const box = $('scanResult');
+    if (out.signal) {
+      const s = out.signal;
+      box.innerHTML = `
+      <div class="signal-card ${s.dir}" style="margin-top:18px">
+        <div class="sc-top">
+          <span class="sc-dir ${s.dir}">${s.dir.toUpperCase()}</span>
+          <span class="sc-type">${s.kind}${s.grade ? ' · Grade ' + s.grade : ''}</span>
+          <span class="sc-time">${new Date().toUTCString().slice(17, 25)} UTC · XAU/USD $${fmt(price)}</span>
+        </div>
+        <div class="sc-prices">
+          ${priceBox('entry', 'Entry', s.entry, 'market')}
+          ${priceBox('sl', 'Stop Loss', s.sl, s.slPips + ' pips')}
+          ${priceBox('tp', 'TP 1', s.tps[0], s.tp1Pips + ' pips')}
+          ${priceBox('tp', 'TP 2', s.tps[1], s.tp2Pips + ' pips')}
+          ${priceBox('tp', 'TP 3', s.tps[2], s.tp3Pips + ' pips')}
+        </div>
+        <div class="sc-reason"><strong>Why this trade:</strong>
+          <ul>${s.reasons.map(r => '<li>' + r + '</li>').join('')}</ul>
+        </div>
+        <div class="sc-rr">${s.plan || ''} · 1 SL / 3 TPs · partials at TP1 → SL to breakeven.</div>
+      </div>`;
+    } else {
+      box.innerHTML = `
+      <div class="signal-card" style="margin-top:18px">
+        <div class="sc-top"><span class="sc-dir wait">NO TRADE — WAIT</span>
+        <span class="sc-time">${new Date().toUTCString().slice(17, 25)} UTC</span></div>
+        <div class="sc-wait-title">${pickedStrat.icon} ${pickedStrat.name}: conditions not met. Sitting on your hands IS a position.</div>
+        <div class="sc-reason"><strong>Status:</strong>
+          <ul>${out.waiting.map(m => '<li>' + m + '</li>').join('')}</ul>
+        </div>
+      </div>`;
+    }
+  }
+
   /* ---------- risk calculator ---------- */
 
   function calc() {
@@ -276,10 +353,12 @@
 
   $('year').textContent = new Date().getFullYear();
   initChart();
+  renderPicker();
   renderHistory();
   calc();
   ['calcBalance', 'calcRisk', 'calcSL'].forEach(id => $(id).addEventListener('input', calc));
   $('refreshBtn').addEventListener('click', runEngine);
+  $('scanBtn').addEventListener('click', scan);
 
   tickPrice();
   runEngine();

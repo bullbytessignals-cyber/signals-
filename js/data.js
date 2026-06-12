@@ -123,8 +123,16 @@ const BBData = (() => {
     m15 = calibrate(m15, offset);
     h1 = calibrate(h1, offset);
     const h4 = toH4(h1);
-    return { m15, h1, h4, spot, source };
+    return { m15, h1, h4, spot, source, offset };
   }
 
-  return { fetchAll, fetchSpot };
+  /** M5 candles (for scalp strategies), calibrated with the same offset. */
+  async function fetchM5(offset) {
+    let m5;
+    try { m5 = await yahooCandles('5m', '5d'); }
+    catch (e) { m5 = await okxCandles('5m'); }
+    return calibrate(m5, offset || 0);
+  }
+
+  return { fetchAll, fetchSpot, fetchM5 };
 })();

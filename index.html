@@ -23,6 +23,7 @@
     </div>
     <nav class="nav">
       <a href="#signal">Live Signal</a>
+      <a href="#strategies">Strategies</a>
       <a href="#chart">Chart</a>
       <a href="#levels">MSNR Levels</a>
       <a href="#sessions">Sessions</a>
@@ -85,6 +86,23 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ===== Strategy picker ===== -->
+  <section id="strategies" class="section">
+    <div class="section-head">
+      <h2>Choose Your Strategy</h2>
+      <span class="muted">pick one · scan live data · get entry, SL + 3 TPs</span>
+    </div>
+    <div class="picker-grid" id="pickerGrid"></div>
+    <div class="picker-actions">
+      <button class="btn-gold" id="scanBtn">⚡ Get Signal Now</button>
+      <span class="muted" id="scanHint">Select a strategy above, then scan</span>
+    </div>
+    <div id="scanResult"></div>
+    <p class="note"><strong>Scalp rules:</strong> risk 0.5–1% per scalp · 2–3 trades/day max · London &amp; NY sessions only ·
+    two losses = done for the day · skip if your broker's spread is over 25–30 cents.
+    <strong>Pick ONE strategy and trade it for a month</strong> — jumping between all of them = mastering none.</p>
   </section>
 
   <!-- ===== Structure panel ===== -->
@@ -224,6 +242,7 @@
 <script src="https://s3.tradingview.com/tv.js"></script>
 <script src="js/data.js"></script>
 <script src="js/engine.js"></script>
+<script src="js/strategies.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
